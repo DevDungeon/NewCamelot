@@ -4,6 +4,11 @@
 *.blend[1-9]
 *.blend[1-9]*
 
+.DS_Store
+.plastic/
+ignore.conf
+*_autosave.blend
+*_autosave.blend.meta
 
 #
 # Get latest from https://github.com/github/gitignore/blob/main/Unity.gitignore
