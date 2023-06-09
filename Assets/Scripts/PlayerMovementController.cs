@@ -9,7 +9,7 @@ public class PlayerMovementController : MonoBehaviour
     public Camera playerCamera;
     private Vector3 playerVelocity;
     private bool groundedPlayer;
-    private float playerSpeed = 1.0f;
+    private float playerSpeed = 2.0f;
     private float jumpHeight = 1.0f;
     private float gravityValue = -9.81f;
     private float speedBoost;
@@ -29,7 +29,7 @@ public class PlayerMovementController : MonoBehaviour
     void Update()
     {
         if (Input.GetKey(KeyCode.LeftShift)) {
-            speedBoost = 2.0f;
+            speedBoost = 1.5f;
         } else {
             speedBoost = 1.0f;
         }
@@ -37,9 +37,17 @@ public class PlayerMovementController : MonoBehaviour
         Vector3 forwardMovement = -transform.forward * Input.GetAxis("Vertical") * playerSpeed * Time.deltaTime * speedBoost;
         Vector3 sideMovement = -transform.right * Input.GetAxis("Horizontal") * playerSpeed * Time.deltaTime * speedBoost;
         characterController.Move(forwardMovement + sideMovement);
-            
+
+
         /**
-         * Right click
+         * Left mouse click
+         */
+        if (Input.GetMouseButton(0)) {
+
+        }
+
+        /**
+         * Right mouse click
          */
         if (Input.GetMouseButton(1)) {
             /**
@@ -51,12 +59,12 @@ public class PlayerMovementController : MonoBehaviour
             /**
              * Vertical camera rotation
              */
-            verticalCameraRotationTracker += Input.GetAxis("Mouse Y"); // Update first and then check if it's within bounds
+            verticalCameraRotationTracker -= Input.GetAxis("Mouse Y"); // Update first and then check if it's within bounds
             // Rotate camera vertically around the player (ONLY if they are within the range)
             if (verticalCameraRotationTracker < verticalCameraRotationMax && verticalCameraRotationTracker > verticalCameraRotationMinimum) {
                 // Debug.Log("Changing verticalCameraRotationTracker by " + Input.GetAxis("Mouse Y"));
                 // verticalCameraRotationTracker += Input.GetAxis("Mouse Y");
-                playerCamera.transform.RotateAround(transform.position, playerCamera.transform.right, Input.GetAxis("Mouse Y") * mouseYSensitivity);
+                playerCamera.transform.RotateAround(transform.position, playerCamera.transform.right, -Input.GetAxis("Mouse Y") * mouseYSensitivity);
             } else if (verticalCameraRotationTracker >= verticalCameraRotationMax) { // Higher is closer to ground
                 verticalCameraRotationTracker = verticalCameraRotationMax;
             } else if (verticalCameraRotationTracker <= verticalCameraRotationMinimum) { // Lower is higher in the air
@@ -83,10 +91,14 @@ public class PlayerMovementController : MonoBehaviour
          * Jump
          */
         groundedPlayer = characterController.isGrounded;
+        Debug.Log("Grounded?" + groundedPlayer + " Player veloc? " + playerVelocity.y);
+        
         if (groundedPlayer && playerVelocity.y < 0)
         {
             playerVelocity.y = 0f;
         }
+        Debug.Log("Zerod veloc"  + playerVelocity.y);
+        
         // Changes the height position of the player..
         if (Input.GetButtonDown("Jump") && groundedPlayer)
         {
@@ -95,11 +107,6 @@ public class PlayerMovementController : MonoBehaviour
         playerVelocity.y += gravityValue * Time.deltaTime;
         characterController.Move(playerVelocity * Time.deltaTime);
 
-
-
-        /**
-         * Mouse camera
-         */
 
     }
 }
